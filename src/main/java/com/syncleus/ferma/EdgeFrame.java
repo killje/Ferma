@@ -27,11 +27,6 @@ public interface EdgeFrame extends ElementFrame {
     @Override
     Edge getElement();
 
-    /**
-     * @return The label associated with this edge
-     */
-    String getLabel();
-
     JsonObject toJson();
 
     /**

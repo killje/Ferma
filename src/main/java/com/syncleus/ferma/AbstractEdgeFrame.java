@@ -42,11 +42,6 @@ public abstract class AbstractEdgeFrame extends AbstractElementFrame implements 
     }
 
     @Override
-    public String getLabel() {
-        return getElement().label();
-    }
-
-    @Override
     public JsonObject toJson() {
         final JsonObject json = new JsonObject();
         if (getId() instanceof Number)
