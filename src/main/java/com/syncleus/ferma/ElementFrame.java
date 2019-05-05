@@ -27,6 +27,11 @@ public interface ElementFrame {
     <N> N getId();
 
     /**
+     * @return The label associated with this element
+     */
+    String getLabel();
+
+    /**
      * @return The property keys of this element.
      */
     Set<String> getPropertyKeys();

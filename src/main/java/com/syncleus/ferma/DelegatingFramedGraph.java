@@ -30,6 +30,7 @@ import com.syncleus.ferma.typeresolvers.UntypedTypeResolver;
 import com.syncleus.ferma.typeresolvers.TypeResolver;
 import com.syncleus.ferma.typeresolvers.PolymorphicTypeResolver;
 import com.google.common.collect.Iterators;
+import com.syncleus.ferma.annotations.VertexLabel;
 import com.syncleus.ferma.framefactories.annotation.AnnotationFrameFactory;
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversal;
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversalSource;
@@ -37,8 +38,10 @@ import org.apache.tinkerpop.gremlin.structure.Edge;
 import org.apache.tinkerpop.gremlin.structure.Element;
 import org.apache.tinkerpop.gremlin.structure.Graph;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
+import org.apache.tinkerpop.gremlin.structure.T;
 
 public class DelegatingFramedGraph<G extends Graph> implements WrappedFramedGraph<G>{
 
@@ -313,13 +316,24 @@ public class DelegatingFramedGraph<G extends Graph> implements WrappedFramedGrap
     }
 
     @Override
-    public <T> T addFramedVertex(final ClassInitializer<T> initializer, final Object... keyValues) {
+    public <K> K addFramedVertex(final ClassInitializer<K> initializer, Object... keyValues) {
+        
+        VertexLabel vertexLabel = initializer.getInitializationType().getAnnotation(VertexLabel.class);
+        if (vertexLabel != null) {
+            if (keyValues == null) {
+                keyValues = new Object[2];
+            } else {
+                keyValues = Arrays.copyOf(keyValues, keyValues.length + 2);
+            }
+            keyValues[keyValues.length - 2] = T.label;
+            keyValues[keyValues.length - 1] = vertexLabel.value();
+        }
         if( keyValues != null ) {
-            final T framedVertex = frameNewElement(this.getBaseGraph().addVertex(keyValues), initializer);
+            final K framedVertex = frameNewElement(this.getBaseGraph().addVertex(keyValues), initializer);
             return framedVertex;
         }
         else {
-            final T framedVertex = frameNewElement(this.getBaseGraph().addVertex(), initializer);
+            final K framedVertex = frameNewElement(this.getBaseGraph().addVertex(), initializer);
             return framedVertex;
         }
     }

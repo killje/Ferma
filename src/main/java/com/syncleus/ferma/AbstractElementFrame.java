@@ -63,6 +63,11 @@ public abstract class AbstractElementFrame implements ElementFrame {
     }
 
     @Override
+    public String getLabel() {
+        return getElement().label();
+    }
+
+    @Override
     public Set<String> getPropertyKeys() {
         return getElement().keys();
     }
